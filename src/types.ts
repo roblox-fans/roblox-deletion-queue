@@ -40,5 +40,9 @@ export interface Env {
         value: string;
         inline?: boolean;
       }>;
+      footer?: {
+        text: string;
+        icon_url?: string;
+      };
     }>;
   }

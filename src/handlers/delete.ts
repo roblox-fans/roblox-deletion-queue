@@ -12,6 +12,8 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
     const placeId = c.req.param('placeId');
     const userIdsParam = c.req.query('userIds');
 
+    console.log(`Deletion request - Place ID: ${placeId}, User IDs param: ${userIdsParam}`);
+
     if (!placeId) {
       return c.json({ success: false, error: 'Place ID is required' }, 400);
     }
@@ -26,6 +28,8 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
       return c.json({ success: false, error: 'At least one user ID is required' }, 400);
     }
 
+    console.log(`Processing deletion for Place ID: ${placeId}, User IDs: ${userIds.join(', ')}`);
+
     // Delete records from database
     let result;
     try {
@@ -37,6 +41,8 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
       
       const params = [placeId, ...userIds];
       result = await c.env.DB.prepare(query).bind(...params).run();
+      
+      console.log(`Database deletion result: ${result.changes} rows affected`);
     } catch (dbError) {
       console.error('Database delete error:', dbError);
       return c.json({ success: false, error: 'Database operation failed' }, 500);
@@ -45,12 +51,18 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
     // Send Discord notification if configured
     if (c.env.DISCORD_WEBHOOK_URL && result.changes > 0) {
       try {
+        console.log(`Sending Discord completion notification for ${result.changes} deletions`);
         const notification = createDeletionCompletedNotification(placeId, userIds);
         await sendDiscordNotification(c.env.DISCORD_WEBHOOK_URL, notification);
+        console.log('Discord completion notification sent successfully');
       } catch (discordError) {
         console.error('Discord notification error:', discordError);
         // Don't fail the request for Discord errors
       }
+    } else if (!c.env.DISCORD_WEBHOOK_URL) {
+      console.log('Discord webhook URL not configured, skipping notification');
+    } else if (result.changes === 0) {
+      console.log('No records deleted, skipping Discord notification');
     }
 
     const response: ApiResponse = {

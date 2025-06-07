@@ -25,25 +25,34 @@ export function createWebhookReceivedNotification(userId: string, placeIds: stri
   return {
     embeds: [{
       title: '🔔 RADD: Data Deletion Request Received',
-      color: 0x3498db,
+      description: 'A new data deletion request has been queued for processing.',
+      color: 0x3498db, // Blue color for new requests
       timestamp: new Date().toISOString(),
       fields: [
         {
-          name: 'User ID',
-          value: userId,
+          name: '👤 User ID',
+          value: `\`${userId}\``,
           inline: true
         },
         {
-          name: 'Place IDs',
-          value: placeIds.join(', '),
+          name: '🎮 Place IDs',
+          value: placeIds.map(id => `\`${id}\``).join(', '),
           inline: true
         },
         {
-          name: 'Status',
-          value: 'Added to deletion queue',
+          name: '📝 Status',
+          value: '✅ Added to deletion queue',
+          inline: false
+        },
+        {
+          name: '⏰ Timestamp',
+          value: `<t:${Math.floor(Date.now() / 1000)}:F>`,
           inline: false
         }
-      ]
+      ],
+      footer: {
+        text: 'RADD - Deletion Request'
+      }
     }]
   };
 }
@@ -51,26 +60,40 @@ export function createWebhookReceivedNotification(userId: string, placeIds: stri
 export function createDeletionCompletedNotification(placeId: string, userIds: string[]): DiscordWebhookPayload {
   return {
     embeds: [{
-      title: '✅ RADD: Deletion Completed',
-      color: 0x27ae60,
+      title: '🗑️ RADD: Data Deletion Completed',
+      description: 'Data deletion has been successfully completed and removed from queue.',
+      color: 0xe74c3c, // Red color for completed deletions
       timestamp: new Date().toISOString(),
       fields: [
         {
-          name: 'Place ID',
-          value: placeId,
+          name: '🎮 Place ID',
+          value: `\`${placeId}\``,
           inline: true
         },
         {
-          name: 'User IDs',
-          value: userIds.join(', '),
+          name: '👥 User IDs',
+          value: userIds.map(id => `\`${id}\``).join(', '),
           inline: true
         },
         {
-          name: 'Count',
-          value: userIds.length.toString(),
+          name: '📊 Count',
+          value: `${userIds.length} user(s)`,
           inline: true
+        },
+        {
+          name: '✅ Status',
+          value: '🔴 **DELETION COMPLETED**',
+          inline: false
+        },
+        {
+          name: '⏰ Completed At',
+          value: `<t:${Math.floor(Date.now() / 1000)}:F>`,
+          inline: false
         }
-      ]
+      ],
+      footer: {
+        text: 'RADD - Deletion Completed'
+      }
     }]
   };
 }
