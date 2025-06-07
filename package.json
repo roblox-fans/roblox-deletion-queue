@@ -1,5 +1,5 @@
 {
-    "name": "roblox-auto-data-deleter",
+    "name": "radd",
     "version": "1.0.0",
     "description": "RADD - Minimal Roblox Auto Data Deleter with Cloudflare Workers",
     "main": "src/index.ts",

@@ -9,9 +9,3 @@ enabled = true
 binding = "DB"
 database_name = "radd-database"                      # database name
 database_id = "a873ca8b-15a3-406c-952e-cf948a152130" # database id  
-
-[vars]
-# Put your environment variables here
-# WEBHOOK_SECRET = "your-webhook-secret"
-# API_KEY = "your-api-key" 
-# DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/..." # optional
