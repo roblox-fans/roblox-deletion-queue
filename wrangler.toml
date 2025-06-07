@@ -4,8 +4,8 @@ compatibility_date = "2024-01-01"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "radd-database"
-database_id = "your-database-id-here"
+database_name = "radd-database"       # database name
+database_id = "a873ca8b-15a3-406c-952e-cf948a152130" # database id  
 
 [vars]
 # Put your environment variables here
