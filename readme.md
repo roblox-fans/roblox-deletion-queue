@@ -4,7 +4,11 @@ A minimal, serverless API for managing Roblox user data deletion requests using 
 
 ## Setup
 
-ここにCloudflareボタン
+1. Log in to Cloudflare
+https://dash.cloudflare.com
+
+2.
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Froblox-jp-dev%2FRADD)
 
 ## API Endpoints
 
