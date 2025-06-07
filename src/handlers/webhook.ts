@@ -42,27 +42,21 @@ export async function handleWebhook(c: Context<{ Bindings: Env }>): Promise<Resp
     const userId = payload.EventPayload.UserId.toString();
     const placeIds = payload.EventPayload.GameIds.map(id => id.toString());
 
-    // Insert records into database and track actual insertions
-    let totalInserted = 0;
+    // Insert records into database with better error handling
     try {
       for (const placeId of placeIds) {
-        const result = await c.env.DB.prepare(`
-          INSERT INTO pending_deletions (place_id, user_id)
+        await c.env.DB.prepare(`
+          INSERT OR IGNORE INTO pending_deletions (place_id, user_id)
           VALUES (?, ?)
-          ON CONFLICT(place_id, user_id) DO NOTHING
         `).bind(placeId, userId).run();
-        
-        if (result.changes > 0) {
-          totalInserted++;
-        }
       }
     } catch (dbError) {
       console.error('Database insert error:', dbError);
       return c.json({ success: false, error: 'Database operation failed' }, 500);
     }
 
-    // Only send Discord notification if at least one record was actually inserted
-    if (c.env.DISCORD_WEBHOOK_URL && totalInserted > 0) {
+    // Send Discord notification if configured
+    if (c.env.DISCORD_WEBHOOK_URL) {
       try {
         const notification = createWebhookReceivedNotification(userId, placeIds);
         await sendDiscordNotification(c.env.DISCORD_WEBHOOK_URL, notification);
@@ -77,8 +71,7 @@ export async function handleWebhook(c: Context<{ Bindings: Env }>): Promise<Resp
       data: {
         userId,
         placeIds,
-        totalInserted,
-        message: `Successfully queued ${totalInserted} new deletion request(s)`
+        message: 'Deletion requests queued successfully'
       }
     };
 
