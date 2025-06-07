@@ -14,11 +14,18 @@ export async function getUsersByPlace(c: Context<{ Bindings: Env }>): Promise<Re
       return c.json({ success: false, error: 'Place ID is required' }, 400);
     }
 
-    const { results } = await c.env.DB.prepare(`
-      SELECT user_id FROM pending_deletions 
-      WHERE place_id = ?
-      ORDER BY created_at ASC
-    `).bind(placeId).all();
+    let results;
+    try {
+      const queryResult = await c.env.DB.prepare(`
+        SELECT user_id FROM pending_deletions 
+        WHERE place_id = ?
+        ORDER BY created_at ASC
+      `).bind(placeId).all();
+      results = queryResult.results;
+    } catch (dbError) {
+      console.error('Database query error:', dbError);
+      return c.json({ success: false, error: 'Database operation failed' }, 500);
+    }
 
     const userIds = results.map((row: any) => row.user_id);
 
@@ -41,10 +48,17 @@ export async function getAllUsers(c: Context<{ Bindings: Env }>): Promise<Respon
   if (authError) return authError;
 
   try {
-    const { results } = await c.env.DB.prepare(`
-      SELECT place_id, user_id FROM pending_deletions 
-      ORDER BY place_id, created_at ASC
-    `).all();
+    let results;
+    try {
+      const queryResult = await c.env.DB.prepare(`
+        SELECT place_id, user_id FROM pending_deletions 
+        ORDER BY place_id, created_at ASC
+      `).all();
+      results = queryResult.results;
+    } catch (dbError) {
+      console.error('Database query error:', dbError);
+      return c.json({ success: false, error: 'Database operation failed' }, 500);
+    }
 
     // Group by place_id
     const groupedData: Record<string, string[]> = {};

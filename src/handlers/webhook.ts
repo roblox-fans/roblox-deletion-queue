@@ -42,20 +42,28 @@ export async function handleWebhook(c: Context<{ Bindings: Env }>): Promise<Resp
     const userId = payload.EventPayload.UserId.toString();
     const placeIds = payload.EventPayload.GameIds.map(id => id.toString());
 
-    // Insert records into database
-    const stmt = c.env.DB.prepare(`
-      INSERT OR IGNORE INTO pending_deletions (place_id, user_id)
-      VALUES (?, ?)
-    `);
-
-    for (const placeId of placeIds) {
-      await stmt.bind(placeId, userId).run();
+    // Insert records into database with better error handling
+    try {
+      for (const placeId of placeIds) {
+        await c.env.DB.prepare(`
+          INSERT OR IGNORE INTO pending_deletions (place_id, user_id)
+          VALUES (?, ?)
+        `).bind(placeId, userId).run();
+      }
+    } catch (dbError) {
+      console.error('Database insert error:', dbError);
+      return c.json({ success: false, error: 'Database operation failed' }, 500);
     }
 
     // Send Discord notification if configured
     if (c.env.DISCORD_WEBHOOK_URL) {
-      const notification = createWebhookReceivedNotification(userId, placeIds);
-      await sendDiscordNotification(c.env.DISCORD_WEBHOOK_URL, notification);
+      try {
+        const notification = createWebhookReceivedNotification(userId, placeIds);
+        await sendDiscordNotification(c.env.DISCORD_WEBHOOK_URL, notification);
+      } catch (discordError) {
+        console.error('Discord notification error:', discordError);
+        // Don't fail the request for Discord errors
+      }
     }
 
     const response: ApiResponse = {

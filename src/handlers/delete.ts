@@ -27,19 +27,30 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
     }
 
     // Delete records from database
-    const placeholders = userIds.map(() => '?').join(',');
-    const query = `
-      DELETE FROM pending_deletions 
-      WHERE place_id = ? AND user_id IN (${placeholders})
-    `;
-    
-    const params = [placeId, ...userIds];
-    const result = await c.env.DB.prepare(query).bind(...params).run();
+    let result;
+    try {
+      const placeholders = userIds.map(() => '?').join(',');
+      const query = `
+        DELETE FROM pending_deletions 
+        WHERE place_id = ? AND user_id IN (${placeholders})
+      `;
+      
+      const params = [placeId, ...userIds];
+      result = await c.env.DB.prepare(query).bind(...params).run();
+    } catch (dbError) {
+      console.error('Database delete error:', dbError);
+      return c.json({ success: false, error: 'Database operation failed' }, 500);
+    }
 
     // Send Discord notification if configured
     if (c.env.DISCORD_WEBHOOK_URL && result.changes > 0) {
-      const notification = createDeletionCompletedNotification(placeId, userIds);
-      await sendDiscordNotification(c.env.DISCORD_WEBHOOK_URL, notification);
+      try {
+        const notification = createDeletionCompletedNotification(placeId, userIds);
+        await sendDiscordNotification(c.env.DISCORD_WEBHOOK_URL, notification);
+      } catch (discordError) {
+        console.error('Discord notification error:', discordError);
+        // Don't fail the request for Discord errors
+      }
     }
 
     const response: ApiResponse = {

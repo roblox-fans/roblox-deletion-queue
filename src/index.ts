@@ -4,8 +4,20 @@ import { Env } from './types';
 import { handleWebhook } from './handlers/webhook';
 import { getUsersByPlace, getAllUsers } from './handlers/users';
 import { handleDeletionCompleted } from './handlers/delete';
+import { initializeDatabase } from './utils/db';
 
 const app = new Hono<{ Bindings: Env }>();
+
+// Database initialization middleware
+app.use('*', async (c, next) => {
+  try {
+    await initializeDatabase(c.env.DB);
+  } catch (error) {
+    console.error('Database initialization failed:', error);
+    return c.json({ success: false, error: 'Database initialization failed' }, 500);
+  }
+  await next();
+});
 
 // CORS middleware
 app.use('*', cors({
