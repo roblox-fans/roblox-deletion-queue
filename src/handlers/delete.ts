@@ -10,7 +10,10 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
 
   try {
     const placeId = c.req.param('placeId');
-    const userIdsParam = c.req.query('userIds');
+    
+    // Try multiple ways to get userIds parameter
+    const url = new URL(c.req.url);
+    const userIdsParam = url.searchParams.get('userIds') || c.req.query('userIds');
 
     console.log(`Deletion request - Place ID: ${placeId}, User IDs param: ${userIdsParam}`);
 
