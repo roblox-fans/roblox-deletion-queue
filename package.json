@@ -1,0 +1,21 @@
+{
+    "name": "roblox-auto-data-deleter",
+    "version": "1.0.0",
+    "description": "RADD - Minimal Roblox Auto Data Deleter with Cloudflare Workers",
+    "main": "src/index.ts",
+    "scripts": {
+      "dev": "wrangler dev",
+      "deploy": "wrangler deploy",
+      "db:create": "wrangler d1 create radd-database",
+      "db:migrate": "wrangler d1 execute radd-database --file=./src/db/schema.sql",
+      "db:migrate:local": "wrangler d1 execute radd-database --local --file=./src/db/schema.sql"
+    },
+    "dependencies": {
+      "hono": "^3.12.0"
+    },
+    "devDependencies": {
+      "@cloudflare/workers-types": "^4.20231218.0",
+      "typescript": "^5.3.0",
+      "wrangler": "^3.22.0"
+    }
+  }

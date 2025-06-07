@@ -1,0 +1,14 @@
+name = "roblox-auto-data-deleter"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "radd-database"
+database_id = "your-database-id-here"
+
+[vars]
+# Put your environment variables here
+# WEBHOOK_SECRET = "your-webhook-secret"
+# API_KEY = "your-api-key" 
+# DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/..." # optional
