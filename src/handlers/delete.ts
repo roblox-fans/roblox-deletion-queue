@@ -33,28 +33,52 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
 
     console.log(`Processing deletion for Place ID: ${placeId}, User IDs: ${userIds.join(', ')}`);
 
-    // Delete records from database
-    let result;
+    // First check if data exists
+    let existingData;
     try {
       const placeholders = userIds.map(() => '?').join(',');
-      const query = `
-        DELETE FROM pending_deletions 
+      const checkQuery = `
+        SELECT user_id FROM pending_deletions 
         WHERE place_id = ? AND user_id IN (${placeholders})
       `;
-      
-      const params = [placeId, ...userIds];
-      result = await c.env.DB.prepare(query).bind(...params).run();
-      
-      console.log(`Database deletion result: ${result.changes} rows affected`);
-    } catch (dbError) {
-      console.error('Database delete error:', dbError);
+      const checkParams = [placeId, ...userIds];
+      const checkResult = await c.env.DB.prepare(checkQuery).bind(...checkParams).all();
+      existingData = checkResult.results;
+      console.log(`Found ${existingData.length} existing records to delete`);
+    } catch (checkError) {
+      console.error('Database check error:', checkError);
       return c.json({ success: false, error: 'Database operation failed' }, 500);
     }
 
-    // Send Discord notification if configured
-    if (c.env.DISCORD_WEBHOOK_URL && result.changes > 0) {
+    // Delete records from database
+    let deletedCount = 0;
+    if (existingData.length > 0) {
       try {
-        console.log(`Sending Discord completion notification for ${result.changes} deletions`);
+        const placeholders = userIds.map(() => '?').join(',');
+        const query = `
+          DELETE FROM pending_deletions 
+          WHERE place_id = ? AND user_id IN (${placeholders})
+        `;
+        
+        const params = [placeId, ...userIds];
+        const result = await c.env.DB.prepare(query).bind(...params).run();
+        
+        // Handle different possible result formats
+        deletedCount = result.changes || result.meta?.changes || existingData.length || 0;
+        console.log(`Database deletion result:`, result);
+        console.log(`Deleted count: ${deletedCount}`);
+      } catch (dbError) {
+        console.error('Database delete error:', dbError);
+        return c.json({ success: false, error: 'Database operation failed' }, 500);
+      }
+    } else {
+      console.log('No records found to delete');
+    }
+
+    // Send Discord notification if configured and data was actually deleted
+    if (c.env.DISCORD_WEBHOOK_URL && deletedCount > 0) {
+      try {
+        console.log(`Sending Discord completion notification for ${deletedCount} deletions`);
         const notification = createDeletionCompletedNotification(placeId, userIds);
         await sendDiscordNotification(c.env.DISCORD_WEBHOOK_URL, notification);
         console.log('Discord completion notification sent successfully');
@@ -64,7 +88,7 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
       }
     } else if (!c.env.DISCORD_WEBHOOK_URL) {
       console.log('Discord webhook URL not configured, skipping notification');
-    } else if (result.changes === 0) {
+    } else if (deletedCount === 0) {
       console.log('No records deleted, skipping Discord notification');
     }
 
@@ -73,8 +97,8 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
       data: {
         placeId,
         userIds,
-        deletedCount: result.changes,
-        message: `Successfully marked ${result.changes} deletion(s) as completed`
+        deletedCount,
+        message: `Successfully marked ${deletedCount} deletion(s) as completed`
       }
     };
 
