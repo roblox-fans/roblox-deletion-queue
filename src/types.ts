@@ -17,7 +17,7 @@ export interface Env {
   
   export interface PendingDeletion {
     id: number;
-    place_id: string;
+    universe_id: string;
     user_id: string;
     created_at: string;
   }

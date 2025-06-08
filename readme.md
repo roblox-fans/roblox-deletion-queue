@@ -17,17 +17,17 @@ Receives data deletion requests from Roblox.
 - Headers: `roblox-signature` (required)
 - Auth: Webhook signature verification
 
-### GET /places/{placeId}/users
-Get pending deletion user IDs for a specific place.
+### GET /universes/{universeId}/users
+Get pending deletion user IDs for a specific universe.
 - Headers: `Authorization: Bearer {API_KEY}`
 - Response: `["userId1", "userId2", ...]`
 
 ### GET /users
-Get all pending deletion data grouped by place.
+Get all pending deletion data grouped by universe.
 - Headers: `Authorization: Bearer {API_KEY}`
-- Response: `{"placeId1": ["userId1"], "placeId2": ["userId2"]}`
+- Response: `{"universeId1": ["userId1"], "universeId2": ["userId2"]}`
 
-### DELETE /places/{placeId}/users?userIds=user1,user2,user3
+### DELETE /universes/{universeId}/users?userIds=user1,user2,user3
 Mark deletions as completed (remove from queue).
 - Headers: `Authorization: Bearer {API_KEY}`
 - Query: `userIds` (comma-separated)

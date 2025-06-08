@@ -4,16 +4,16 @@ export async function initializeDatabase(db: D1Database): Promise<void> {
       await db.prepare(`
         CREATE TABLE IF NOT EXISTS pending_deletions (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          place_id TEXT NOT NULL,
+          universe_id TEXT NOT NULL,
           user_id TEXT NOT NULL,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          UNIQUE(place_id, user_id)
+          UNIQUE(universe_id, user_id)
         );
       `).run();
   
       // Create indexes with IF NOT EXISTS
       await db.prepare(`
-        CREATE INDEX IF NOT EXISTS idx_place_id ON pending_deletions(place_id);
+        CREATE INDEX IF NOT EXISTS idx_universe_id ON pending_deletions(universe_id);
       `).run();
       
       await db.prepare(`

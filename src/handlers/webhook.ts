@@ -40,15 +40,15 @@ export async function handleWebhook(c: Context<{ Bindings: Env }>): Promise<Resp
     }
 
     const userId = payload.EventPayload.UserId.toString();
-    const placeIds = payload.EventPayload.GameIds.map(id => id.toString());
+    const universeIds = payload.EventPayload.GameIds.map(id => id.toString());
 
     // Insert records into database with better error handling
     try {
-      for (const placeId of placeIds) {
+      for (const universeId of universeIds) {
         await c.env.DB.prepare(`
-          INSERT OR IGNORE INTO pending_deletions (place_id, user_id)
+          INSERT OR IGNORE INTO pending_deletions (universe_id, user_id)
           VALUES (?, ?)
-        `).bind(placeId, userId).run();
+        `).bind(universeId, userId).run();
       }
     } catch (dbError) {
       console.error('Database insert error:', dbError);
@@ -58,7 +58,7 @@ export async function handleWebhook(c: Context<{ Bindings: Env }>): Promise<Resp
     // Send Discord notification if configured
     if (c.env.DISCORD_WEBHOOK_URL) {
       try {
-        const notification = createWebhookReceivedNotification(userId, placeIds);
+        const notification = createWebhookReceivedNotification(userId, universeIds);
         await sendDiscordNotification(c.env.DISCORD_WEBHOOK_URL, notification);
       } catch (discordError) {
         console.error('Discord notification error:', discordError);
@@ -70,7 +70,7 @@ export async function handleWebhook(c: Context<{ Bindings: Env }>): Promise<Resp
       success: true,
       data: {
         userId,
-        placeIds,
+        universeIds,
         message: 'Deletion requests queued successfully'
       }
     };

@@ -21,7 +21,7 @@ export async function sendDiscordNotification(
   }
 }
 
-export function createWebhookReceivedNotification(userId: string, placeIds: string[]): DiscordWebhookPayload {
+export function createWebhookReceivedNotification(userId: string, universeIds: string[]): DiscordWebhookPayload {
   return {
     embeds: [{
       title: '🔔 RDQ: Data Deletion Request Received',
@@ -35,8 +35,8 @@ export function createWebhookReceivedNotification(userId: string, placeIds: stri
           inline: true
         },
         {
-          name: '🎮 Place IDs',
-          value: placeIds.map(id => `\`${id}\``).join(', '),
+          name: '🌌 Universe IDs',
+          value: universeIds.map(id => `\`${id}\``).join(', '),
           inline: true
         },
         {
@@ -57,7 +57,7 @@ export function createWebhookReceivedNotification(userId: string, placeIds: stri
   };
 }
 
-export function createDeletionCompletedNotification(placeId: string, userIds: string[]): DiscordWebhookPayload {
+export function createDeletionCompletedNotification(universeId: string, userIds: string[]): DiscordWebhookPayload {
   return {
     embeds: [{
       title: '🗑️ RDQ: Data Deletion Completed',
@@ -66,8 +66,8 @@ export function createDeletionCompletedNotification(placeId: string, userIds: st
       timestamp: new Date().toISOString(),
       fields: [
         {
-          name: '🎮 Place ID',
-          value: `\`${placeId}\``,
+          name: '🌌 Universe ID',
+          value: `\`${universeId}\``,
           inline: true
         },
         {
