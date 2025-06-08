@@ -49,7 +49,7 @@ Cloudflare Workers と D1 を使って Roblox のユーザーデータ削除リ�
 
 ## Roblox Studio からの API 呼び出し例
 
-Python や Datastore API キーを使った呼び出しも可能ですが、ここでは Roblox 側の例を示します。
+Python や Datastore API キーを使った呼び出しなども可能ですが、ここでは Roblox 側の例を示します。
 
 1. 以下のアセットを取得する  
    https://create.roblox.com/store/asset/83989452965061/RDQ-sample-script
@@ -57,7 +57,7 @@ Python や Datastore API キーを使った呼び出しも可能ですが、こ�
 2. モジュールスクリプト内のこの 2 行を、先ほどの URL と `API_KEY` に書き換える  
 ![](./images/7.png)
 
-3. Sample Script のコメントアウトされた `processDataDeletion` 関数を使ってデータを処理する  
+3. Sample Script にあるように、モジュールスクリプトの `processDataDeletion` 関数を使ってデータを処理する  
    - 引数に削除用関数を渡すと、削除対象のユーザー ID リストがその関数に渡される  
    - 削除処理が成功した場合は `true` を返すことで、Cloudflare 上の該当レコードも削除される  
    - サンプルのように 15 行程度で実装可能です
