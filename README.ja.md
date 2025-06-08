@@ -45,7 +45,7 @@ Cloudflare Workers と D1 を使って Roblox のユーザーデータ削除リ�
 
 ## Roblox Studio からの API 呼び出し例
 
-Python や Datastore API キーを使った呼び出しも可能ですが、ここでは Roblox 側の例を示します。
+Python や Datastore API キーを使った呼び出しなども可能ですが、ここでは Roblox 側の例を示します。
 
 1. 以下のアセットを取得する  
    https://create.roblox.com/store/asset/83989452965061/RDQ-sample-script
