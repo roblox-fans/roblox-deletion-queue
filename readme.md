@@ -2,6 +2,9 @@
 
 A minimal, serverless API for managing Roblox user data deletion requests using Cloudflare Workers and D1.
 
+## Other languages 
+[日本語](README.ja.md)
+
 ## Setup
 
 1. Sign up with Cloudflare and Github
