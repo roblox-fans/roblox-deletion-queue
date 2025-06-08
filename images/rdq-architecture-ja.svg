@@ -1,0 +1,82 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-size="24" font-weight="bold" fill="#333">RDQ システムアーキテクチャ</text>
+  
+  <!-- Roblox Platform -->
+  <g>
+    <rect x="50" y="80" width="200" height="100" rx="10" fill="#ee4c2c" stroke="#c73e21" stroke-width="2"/>
+    <text x="150" y="115" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Roblox プラットフォーム</text>
+    <text x="150" y="140" text-anchor="middle" font-size="12" fill="white">ユーザーデータ</text>
+    <text x="150" y="160" text-anchor="middle" font-size="12" fill="white">削除リクエスト</text>
+  </g>
+  
+  <!-- Cloudflare Workers -->
+  <g>
+    <rect x="350" y="200" width="200" height="120" rx="10" fill="#f38020" stroke="#d16910" stroke-width="2"/>
+    <text x="450" y="235" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Cloudflare Workers</text>
+    <text x="450" y="255" text-anchor="middle" font-size="12" fill="white">RDQ API</text>
+    <rect x="370" y="270" width="160" height="30" rx="5" fill="#fff" opacity="0.3"/>
+    <text x="450" y="290" text-anchor="middle" font-size="11" fill="white">Webhook ハンドラー</text>
+  </g>
+  
+  <!-- D1 Database -->
+  <g>
+    <rect x="350" y="380" width="200" height="80" rx="10" fill="#4a5568" stroke="#2d3748" stroke-width="2"/>
+    <text x="450" y="410" text-anchor="middle" font-size="16" font-weight="bold" fill="white">D1 データベース</text>
+    <text x="450" y="435" text-anchor="middle" font-size="12" fill="white">削除キュー</text>
+  </g>
+  
+  <!-- Discord -->
+  <g>
+    <rect x="600" y="200" width="150" height="80" rx="10" fill="#5865f2" stroke="#4752c4" stroke-width="2"/>
+    <text x="675" y="230" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Discord</text>
+    <text x="675" y="250" text-anchor="middle" font-size="12" fill="white">通知</text>
+    <text x="675" y="265" text-anchor="middle" font-size="10" fill="white">(オプション)</text>
+  </g>
+  
+  <!-- Roblox Studio / External Apps -->
+  <g>
+    <rect x="50" y="350" width="200" height="100" rx="10" fill="#00a2ff" stroke="#0082cc" stroke-width="2"/>
+    <text x="150" y="385" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Roblox Studio /</text>
+    <text x="150" y="405" text-anchor="middle" font-size="16" font-weight="bold" fill="white">外部アプリ</text>
+    <text x="150" y="425" text-anchor="middle" font-size="12" fill="white">(Python など)</text>
+  </g>
+  
+  <!-- Arrows and Labels -->
+  <!-- Roblox to Cloudflare -->
+  <defs>
+    <marker id="arrowhead-ja" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+  
+  <path d="M 250 130 Q 300 130 300 200 L 350 200" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead-ja)"/>
+  <text x="280" y="120" font-size="11" fill="#666">POST /webhook</text>
+  <text x="260" y="135" font-size="10" fill="#666">署名検証</text>
+  
+  <!-- Cloudflare to D1 -->
+  <path d="M 450 320 L 450 380" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead-ja)"/>
+  <text x="460" y="355" font-size="11" fill="#666">保存</text>
+  
+  <!-- Cloudflare to Discord -->
+  <path d="M 550 240 L 600 240" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead-ja)"/>
+  <text x="560" y="230" font-size="10" fill="#666">通知</text>
+  
+  <!-- External Apps to Cloudflare -->
+  <path d="M 250 400 Q 300 400 300 300 L 350 280" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead-ja)"/>
+  <text x="260" y="390" font-size="10" fill="#666">GET /users</text>
+  <text x="240" y="405" font-size="10" fill="#666">DELETE /users</text>
+  <text x="265" y="420" font-size="10" fill="#666">API キー認証</text>
+  
+  <!-- API Endpoints Box -->
+  <g>
+    <rect x="50" y="500" width="700" height="80" rx="8" fill="#e2e8f0" stroke="#cbd5e0" stroke-width="1"/>
+    <text x="60" y="520" font-size="12" font-weight="bold" fill="#2d3748">API エンドポイント:</text>
+    <text x="60" y="540" font-size="11" fill="#4a5568">• POST /webhook - Roblox からの削除リクエストを受信</text>
+    <text x="60" y="555" font-size="11" fill="#4a5568">• GET /universes/{id}/users - 指定ユニバースの未処理ユーザーを取得</text>
+    <text x="60" y="570" font-size="11" fill="#4a5568">• DELETE /universes/{id}/users - 削除完了としてマーク</text>
+  </g>
+</svg>

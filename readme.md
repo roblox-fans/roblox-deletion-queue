@@ -5,6 +5,10 @@ A minimal, serverless API for managing Roblox user data deletion requests using 
 ## Other languages 
 [日本語](README.ja.md)
 
+## System Architecture
+
+![RDQ System Architecture](./images/rdq-architecture-en.svg)
+
 ## Setup
 
 1. Sign up with Cloudflare and Github

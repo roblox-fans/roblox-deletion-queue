@@ -2,6 +2,10 @@
 
 Cloudflare Workers と D1 を使って Roblox のユーザーデータ削除リクエストを管理する、最小限のサーバーレス API です！
 
+## システムアーキテクチャ
+
+![RDQ システムアーキテクチャ](./images/rdq-architecture-ja.svg)
+
 ## セットアップ
 
 1. Cloudflare と GitHub にサインアップする
