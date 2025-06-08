@@ -65,6 +65,25 @@ If the deletion is successful, return true to consider the data deletion for the
 
 As shown in the Sample Script, this can be achieved with just 15 lines of script!
 
+### Sample Script
+```lua
+local DataStoreService = game:GetService("DataStoreService")
+local RDQ              = require(script.Parent.RDQ)
+
+local DATA_STORE_NAME  = "PlayerData" -- Change to the actual datastore name
+local playerDataStore  = DataStoreService:GetDataStore(DATA_STORE_NAME)
+
+RDQ.processDataDeletion(function(userIds)
+
+	for _, userId:number in pairs(userIds) do
+		local key:string = "Player_"..tostring(userId) -- Change to actual datastore key format
+		playerDataStore:RemoveAsync(key)
+	end
+	
+	return true -- If successful, return true (deletion is considered successful and sent to RDQ)
+end)
+```
+
 ## API Endpoints
 
 ### POST /webhook

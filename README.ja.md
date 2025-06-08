@@ -60,7 +60,26 @@ Python や Datastore API キーを使った呼び出しなども可能ですが�
 3. Sample Script にあるように、モジュールスクリプトの `processDataDeletion` 関数を使ってデータを処理する  
    - 引数に削除用関数を渡すと、削除対象のユーザー ID リストがその関数に渡される  
    - 削除処理が成功した場合は `true` を返すことで、Cloudflare 上の該当レコードも削除される  
-   - サンプルのように 15 行程度で実装可能です
+   - サンプルスクリプトのように 15 行程度で実装可能です
+
+### サンプルスクリプト (上記アセットに同梱されています)
+```lua
+local DataStoreService = game:GetService("DataStoreService")
+local RDQ              = require(script.Parent.RDQ)
+
+local DATA_STORE_NAME  = "PlayerData" -- 実際のデータストア名に変更
+local playerDataStore  = DataStoreService:GetDataStore(DATA_STORE_NAME)
+
+RDQ.processDataDeletion(function(userIds)
+
+	for _, userId:number in pairs(userIds) do
+		local key:string = "Player_"..tostring(userId) -- 実際のデータストアキーの形式に変更
+		playerDataStore:RemoveAsync(key)
+	end
+	
+	return true -- 削除処理が成功した場合、trueを返します（削除が成功したことをRDQに送信します）
+end)
+```
 
 ## API エンドポイント
 
