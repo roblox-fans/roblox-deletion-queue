@@ -24,7 +24,7 @@ export async function sendDiscordNotification(
 export function createWebhookReceivedNotification(userId: string, placeIds: string[]): DiscordWebhookPayload {
   return {
     embeds: [{
-      title: '🔔 RADD: Data Deletion Request Received',
+      title: '🔔 RDQ: Data Deletion Request Received',
       description: 'A new data deletion request has been queued for processing.',
       color: 0x3498db, // Blue color for new requests
       timestamp: new Date().toISOString(),
@@ -51,7 +51,7 @@ export function createWebhookReceivedNotification(userId: string, placeIds: stri
         }
       ],
       footer: {
-        text: 'RADD - Deletion Request'
+        text: 'RDQ - Deletion Request'
       }
     }]
   };
@@ -60,7 +60,7 @@ export function createWebhookReceivedNotification(userId: string, placeIds: stri
 export function createDeletionCompletedNotification(placeId: string, userIds: string[]): DiscordWebhookPayload {
   return {
     embeds: [{
-      title: '🗑️ RADD: Data Deletion Completed',
+      title: '🗑️ RDQ: Data Deletion Completed',
       description: 'Data deletion has been successfully completed and removed from queue.',
       color: 0xe74c3c, // Red color for completed deletions
       timestamp: new Date().toISOString(),
@@ -92,7 +92,7 @@ export function createDeletionCompletedNotification(placeId: string, userIds: st
         }
       ],
       footer: {
-        text: 'RADD - Deletion Completed'
+        text: 'RDQ - Deletion Completed'
       }
     }]
   };
