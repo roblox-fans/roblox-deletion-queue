@@ -1,6 +1,6 @@
 # Roblox Deletion キュー (RDQ)
 
-Cloudflare Workers と D1 を使って Roblox のユーザーデータ削除リクエストを管理する、最小限のサーバーレス API です。
+Cloudflare Workers と D1 を使って Roblox のユーザーデータ削除リクエストを管理する、最小限のサーバーレス API です！
 
 ## セットアップ
 

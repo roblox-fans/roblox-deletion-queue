@@ -1,6 +1,6 @@
 # Roblox Deletion Queue (RDQ)
 
-A minimal, serverless API for managing Roblox user data deletion requests using Cloudflare Workers and D1.
+A minimal, serverless API for managing Roblox user data deletion requests using Cloudflare Workers and D1!
 
 ## Other languages 
 [日本語](README.ja.md)
