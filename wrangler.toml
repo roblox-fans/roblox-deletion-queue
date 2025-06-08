@@ -1,4 +1,4 @@
-name = "Roblox Deletion Queue"
+name = "roblox-deletion-queue"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
 
