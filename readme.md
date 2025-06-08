@@ -1,14 +1,62 @@
-# Roblox Auto Data Deleter (RADD)
+# Roblox Deletion Queue (RDQ)
 
 A minimal, serverless API for managing Roblox user data deletion requests using Cloudflare Workers and D1.
 
 ## Setup
 
-1. Log in to Cloudflare
-https://dash.cloudflare.com
+1. Sign up with Cloudflare and Github
 
-2.
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Froblox-jp-dev%2FRADD)
+2. Press the button below
+<a href="https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Froblox-jp-dev%2FRADD" target="_blank" rel="noopener noreferrer">
+  <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare">
+</a>
+
+3. You should be taken to the Cloudflare application setup screen, select your Git account and click "Create and deploy".
+
+4. Wait until the deployment is complete!
+![](./images/1.png)
+
+5. Once the deployment is complete, go to Continue to project.
+![](./images/2.png)
+
+6. In the Settings tab, in the Variables and Secrets section, click Add.
+![](./images/3.png)
+
+7. Set the API_KEY and WEBHOOK_SECRET environment variables. Set them like this. Value should be a long, secure alphanumeric value and should not be shared with anyone. Make a note of it as you will use it later.
+You can also set DISCORD_WEBHOOK_URL to send notifications to Discord.
+![](./images/4.png)
+
+8. Copy the application domain. You will use it later!
+![](./images/5.png)
+
+9. Now that the setup on the application side is complete, let's set up the webhook on the Roblox side. Go to the Webhook settings page.
+https://create.roblox.com/settings/webhooks
+
+10. Please set it as shown in the image. For Webhook URL, enter https://< domain you copied earlier >/webhook. For Secret, enter the WEBHOOK_SECRET you entered earlier.
+![](./images/6.png)
+
+That completes the setup on the application!
+Now, deletion requests received from Roblox will be stored on Cloudflare.
+Using the API endpoints below, you can retrieve user IDs that have not yet been deleted, or delete data for user IDs whose data has already been deleted.
+
+## Example of calling an API endpoint from Roblox Studio
+You can call these API endpoints anywhere, for example from Python to delete using your Datastore API key.
+
+But here we provide an example of calling it from Roblox.
+
+1. First, get the following assets:
+https://create.roblox.com/store/asset/83989452965061/RDQ-sample-script
+
+2. Replace these two lines in the module script with the correct URL and API_KEY.
+![](./images/7.png)
+
+3. You can process data using the processDataDeletion function, as shown in the disabled Sample Script.
+
+Enter the deletion function as the argument. A list of user IDs to be deleted is passed as an argument to the deletion function, so you can use this to delete the data.
+
+If the deletion is successful, return true to consider the data deletion for the corresponding user ID successful, and the data for that user ID will also be deleted from the Cloudflare database.
+
+As shown in the Sample Script, this can be achieved with just 15 lines of script!
 
 ## API Endpoints
 

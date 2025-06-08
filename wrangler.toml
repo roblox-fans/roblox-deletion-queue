@@ -1,4 +1,4 @@
-name = "roblox-auto-data-deleter"
+name = "Roblox Deletion Queue"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
 
@@ -7,5 +7,5 @@ enabled = true
 
 [[d1_databases]]
 binding = "DB"
-database_name = "radd-database"                      # database name
+database_name = "rdq-database"                       # database name
 database_id = "a873ca8b-15a3-406c-952e-cf948a152130" # database id  
