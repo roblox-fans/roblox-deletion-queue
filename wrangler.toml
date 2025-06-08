@@ -1,4 +1,4 @@
-name = "roblox-deletion-queue"
+name = "roblox-auto-data-deleter"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
 
