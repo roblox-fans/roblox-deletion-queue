@@ -81,6 +81,60 @@ RDQ.processDataDeletion(function(userIds)
 end)
 ```
 
+上記のスクリプトは、サーバーが起動するたびに削除処理を実行します。
+そのため、大規模なゲームでは、多数のサーバーが同時に起動すると、Cloudflare Workers のリクエスト上限（1日あたり100,000リクエスト、1分あたり1,000リクエスト）に到達する可能性があります。
+そこで、大規模なゲームでは以下のスクリプトを使用することで、削除処理を1サーバーが30分に1回のみ行うようにすることができます。
+
+※Server Version Trackerはこちらから入手できます。
+[https://create.roblox.com/store/asset/120871081721478/Server-Version-Tracker](https://create.roblox.com/store/asset/120871081721478/Server-Version-Tracker)
+
+```lua
+local DataStoreService     = game:GetService("DataStoreService")
+local ServerScriptService  = game:GetService("ServerScriptService")
+
+-- 実際のモジュールスクリプトのパス
+local RDQ                  = require(ServerScriptService.RDQ)
+local serverVersionTracker = require(ServerScriptService.ServerVersionTracker)
+
+-- Server Version Managerはこちらで利用可能: https://create.roblox.com/store/asset/120871081721478/Server-Version-Tracker
+
+-- 設定
+local DATA_STORE_NAME      = "PlayerData" -- 実際のデータストア名に変更
+local PROCESS_INTERVAL     = 30 * 60      -- 30分
+local playerDataStore      = DataStoreService:GetDataStore(DATA_STORE_NAME)
+
+local function processDeletion()
+	-- 管理サーバー（全サーバーの中で最も古いサーバー）でない場合、処理を行わない
+	if not serverVersionTracker.isManagementServer() then return end
+	
+	local success, err = pcall(function()
+		RDQ.processDataDeletion(function(userIds)
+			for _, userId:number in pairs(userIds) do
+				local key:string = "Player_"..tostring(userId) -- 実際のデータストアキーの形式に変更
+				playerDataStore:RemoveAsync(key)
+			end
+			
+			return true
+		end)
+	end)
+	
+	if not success then
+		warn("削除処理中にエラーが発生しました:", err)
+	end
+end
+
+-- 起動直後に削除処理を実行
+task.spawn(processDeletion)
+
+-- サーバーバージョンマネージャーを開始
+task.spawn(function()
+	while true do
+		task.wait(PROCESS_INTERVAL)
+		processDeletion()
+	end
+end)
+```
+
 ## API エンドポイント
 
 ### POST /webhook  
