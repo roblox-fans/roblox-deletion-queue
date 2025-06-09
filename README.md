@@ -84,6 +84,60 @@ RDQ.processDataDeletion(function(userIds)
 end)
 ```
 
+The above script will run the deletion process every time the server is started.
+Therefore, for large-scale games, if many servers are started at the same time, you may reach the request limit of Cloudflare Workers (100,000 requests/day, 1,000/day).
+Therefore, for large-scale games, we recommend using the following script.
+Server Version Tracker can be found here.
+https://create.roblox.com/store/asset/120871081721478/Server-Version-Tracker
+
+### Sample Script with Server Version Tracker
+```lua
+local DataStoreService     = game:GetService("DataStoreService")
+local ServerScriptService  = game:GetService("ServerScriptService")
+
+-- Actual module script path
+local RDQ                  = require(ServerScriptService.RDQ)
+local serverVersionTracker = require(ServerScriptService.ServerVersionTracker)
+
+-- Server Version Manager is available here: https://create.roblox.com/store/asset/120871081721478/Server-Version-Tracker
+
+-- Settings
+local DATA_STORE_NAME      = "PlayerData"
+local PROCESS_INTERVAL     = 30 * 60  -- 30 minutes
+local playerDataStore      = DataStoreService:GetDataStore(DATA_STORE_NAME)
+
+local function processDeletion()
+	-- If it is not the management server (the oldest server of all servers), no processing will be performed.
+	if not serverVersionTracker.isManagementServer() then return end
+	
+	local success, err = pcall(function()
+		RDQ.processDataDeletion(function(userIds)
+			for _, userId:number in pairs(userIds) do
+				local key:string = "Player_"..tostring(userId) -- Change to actual datastore key format
+				playerDataStore:RemoveAsync(key)
+			end
+			
+			return true
+		end)
+	end)
+	
+	if not success then
+		warn("Error while processing deletion:", err)
+	end
+end
+
+-- Start the deletion process immediately
+task.spawn(processDeletion)
+
+-- Start the server version manager
+task.spawn(function()
+	while true do
+		task.wait(PROCESS_INTERVAL)
+		processDeletion()
+	end
+end)
+```
+
 ## API Endpoints
 
 ### POST /webhook
