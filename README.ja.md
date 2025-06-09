@@ -101,7 +101,12 @@ local serverVersionTracker = require(ServerScriptService.ServerVersionTracker)
 -- 設定
 local DATA_STORE_NAME      = "PlayerData" -- 実際のデータストア名に変更
 local PROCESS_INTERVAL     = 30 * 60      -- 30分
+local VERSION = game.PlaceVersion  -- サーバーバージョン (※カスタムバージョンでもOK!!)
+
 local playerDataStore      = DataStoreService:GetDataStore(DATA_STORE_NAME)
+
+-- サーバー情報を登録
+ServerVersionTracker.ServerStarted(VERSION)
 
 local function processDeletion()
 	-- 管理サーバー（全サーバーの中で最も古いサーバー）でない場合、処理を行わない
@@ -132,6 +137,11 @@ task.spawn(function()
 		task.wait(PROCESS_INTERVAL)
 		processDeletion()
 	end
+end)
+
+-- サーバーのシャットダウン時にデータ削除を実行
+game:BindToClose(function()
+	ServerVersionTracker.ServerEnded()
 end)
 ```
 
