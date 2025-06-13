@@ -54,7 +54,7 @@ Discord Webhook URLを設定すれば、削除リクエストを受け取った�
 ![](./images/9.png)
 ![](./images/8.png)
 
-3. あとは先ほど紹介した`DISCORD_WEBHOOK_URL`環境変数にコピーしたURLを設定すると、通知が送信されるようになります！
+2. あとは先ほど紹介した`DISCORD_WEBHOOK_URL`環境変数にコピーしたURLを設定すると、通知が送信されるようになります！
 
 以上でアプリケーション側のセットアップは完了です。  
 以降、Roblox から届いた削除リクエストは Cloudflare 上に保存されます。  
