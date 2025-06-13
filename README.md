@@ -30,7 +30,7 @@ A minimal, serverless API for managing Roblox user data deletion requests using 
 ![](./images/3.png)
 
 7. Set the API_KEY and WEBHOOK_SECRET environment variables. Set them like this. Value should be a long, secure alphanumeric value and should not be shared with anyone. Make a note of it as you will use it later.
-You can also set DISCORD_WEBHOOK_URL to send notifications to Discord.
+You can also set DISCORD_WEBHOOK_URL to send notifications to Discord (See below).
 ![](./images/4.png)
 
 8. Copy the application domain. You will use it later!
@@ -41,6 +41,24 @@ https://create.roblox.com/settings/webhooks
 
 10. Please set it as shown in the image. For Webhook URL, enter https://< domain you copied earlier >/webhook. For Secret, enter the WEBHOOK_SECRET you entered earlier.
 ![](./images/6.png)
+
+Sure, here is the English translation:
+
+---
+
+### [Optional] Send Notifications to a Discord Webhook
+
+If you set up a Discord Webhook URL, you can send notifications to a Discord channel when a deletion request is received and when it is processed. It will look something like this:
+
+![](./images/10.png)
+
+Setting it up is very simple.
+
+1. In the settings of the channel where you want to send notifications, select **"Integrations"** from the tab on the left, and copy the Webhook URL as shown in the image.
+   ![](./images/9.png)
+   ![](./images/8.png)
+
+2. Then, simply set the copied URL to the `DISCORD_WEBHOOK_URL` environment variable introduced earlier, and notifications will start being sent!
 
 That completes the setup on the application!
 Now, deletion requests received from Roblox will be stored on Cloudflare.
@@ -166,3 +184,6 @@ Mark deletions as completed (remove from queue).
 - `WEBHOOK_SECRET`: Secret for Roblox webhook signature verification
 - `API_KEY`: API key for endpoint authentication
 - `DISCORD_WEBHOOK_URL`: (Optional) Discord webhook URL for notifications
+
+## LICENSE
+[MIT](LICENSE)
