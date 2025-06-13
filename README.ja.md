@@ -30,6 +30,7 @@ Cloudflare Workers と D1 を使って Roblox のユーザーデータ削除リ�
    - 値は長くて安全な英数字の文字列にし、他人と共有しない  
    - 後ほど利用するのでメモを残しておく  
    - 任意で `DISCORD_WEBHOOK_URL` を設定すると Discord へ通知が送れる（後述）
+
 ![](./images/4.png)
 
 8. アプリケーションのドメインをコピーする（後で使用）  
@@ -44,8 +45,8 @@ Cloudflare Workers と D1 を使って Roblox のユーザーデータ削除リ�
 ![](./images/6.png)
 
 ### 【任意】Discord Webhookに通知を送信する
-Discord Webhook URLを設定すれば、削除リクエストを受け取った時と処理した時にDiscordチャンネルに通知を送信することができます。
-このような感じです。
+Discord Webhook URLを設定すれば、削除リクエストを受け取った時と処理した時にDiscordチャンネルに通知を送信することができます。このような感じです。
+
 ![](./images/10.png)
 
 やり方は、とても簡単。
