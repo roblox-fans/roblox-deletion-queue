@@ -29,7 +29,7 @@ Cloudflare Workers と D1 を使って Roblox のユーザーデータ削除リ�
 7. 環境変数として `API_KEY` と `WEBHOOK_SECRET` を追加する。  
    - 値は長くて安全な英数字の文字列にし、他人と共有しない  
    - 後ほど利用するのでメモを残しておく  
-   - 任意で `DISCORD_WEBHOOK_URL` を設定すると Discord へ通知が送れる  
+   - 任意で `DISCORD_WEBHOOK_URL` を設定すると Discord へ通知が送れる（後述）
 ![](./images/4.png)
 
 8. アプリケーションのドメインをコピーする（後で使用）  
@@ -42,6 +42,17 @@ Cloudflare Workers と D1 を使って Roblox のユーザーデータ削除リ�
     - **Webhook URL**：`https://<先ほどコピーしたドメイン>/webhook`  
     - **Secret**：手順7で設定した `WEBHOOK_SECRET`  
 ![](./images/6.png)
+
+### 【任意】Discord Webhookに通知を送信する
+Discord Webhook URLを設定すれば、削除リクエストを受け取った時と処理した時にDiscordチャンネルに通知を送信することができます。
+このような感じです。
+![](./images/10.png)
+
+やり方は、とても簡単。
+1. 通知を送信したいチャンネルの設定で、左側のタブから「連携サービス」を選択し、画像のようにWebhook URLをコピーします。
+![](./images/8.png)
+![](./images/9.png)
+2. あとは先ほど紹介した`DISCORD_WEBHOOK_URL`環境変数にコピーしたURLを設定すると、通知が送信されるようになります！
 
 以上でアプリケーション側のセットアップは完了です。  
 以降、Roblox から届いた削除リクエストは Cloudflare 上に保存されます。  
