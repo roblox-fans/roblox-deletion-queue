@@ -42,8 +42,6 @@ https://create.roblox.com/settings/webhooks
 10. Please set it as shown in the image. For Webhook URL, enter https://< domain you copied earlier >/webhook. For Secret, enter the WEBHOOK_SECRET you entered earlier.
 ![](./images/6.png)
 
-Sure, here is the English translation:
-
 ---
 
 ### [Optional] Send Notifications to a Discord Webhook
