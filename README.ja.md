@@ -187,4 +187,4 @@ Roblox からのデータ削除リクエストを受信します。
 - `DISCORD_WEBHOOK_URL`: （任意）Discord 通知用 Webhook URL  
 
 ## LICENCE
-MIT[LICENCE]
+[MIT](LICENCE)
