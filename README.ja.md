@@ -185,3 +185,6 @@ Roblox からのデータ削除リクエストを受信します。
 - `WEBHOOK_SECRET`: Roblox Webhook シグネチャ検証用のシークレット  
 - `API_KEY`: エンドポイント認証用の API キー  
 - `DISCORD_WEBHOOK_URL`: （任意）Discord 通知用 Webhook URL  
+
+## LICENCE
+MIT[LICENCE]
