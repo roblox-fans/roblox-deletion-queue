@@ -9,16 +9,16 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
   if (authError) return authError;
 
   try {
-    const universeId = c.req.param('universeId');
+    const placeId = c.req.param('placeId');
     
     // Try multiple ways to get userIds parameter
     const url = new URL(c.req.url);
     const userIdsParam = url.searchParams.get('userIds') || c.req.query('userIds');
 
-    console.log(`Deletion request - Universe ID: ${universeId}, User IDs param: ${userIdsParam}`);
+    console.log(`Deletion request - Place ID: ${placeId}, User IDs param: ${userIdsParam}`);
 
-    if (!universeId) {
-      return c.json({ success: false, error: 'Universe ID is required' }, 400);
+    if (!placeId) {
+      return c.json({ success: false, error: 'Place ID is required' }, 400);
     }
 
     if (!userIdsParam) {
@@ -31,7 +31,7 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
       return c.json({ success: false, error: 'At least one user ID is required' }, 400);
     }
 
-    console.log(`Processing deletion for Universe ID: ${universeId}, User IDs: ${userIds.join(', ')}`);
+    console.log(`Processing deletion for Place ID: ${placeId}, User IDs: ${userIds.join(', ')}`);
 
     // First check if data exists
     let existingData;
@@ -39,9 +39,9 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
       const placeholders = userIds.map(() => '?').join(',');
       const checkQuery = `
         SELECT user_id FROM pending_deletions 
-        WHERE universe_id = ? AND user_id IN (${placeholders})
+        WHERE place_id = ? AND user_id IN (${placeholders})
       `;
-      const checkParams = [universeId, ...userIds];
+      const checkParams = [placeId, ...userIds];
       const checkResult = await c.env.DB.prepare(checkQuery).bind(...checkParams).all();
       existingData = checkResult.results;
       console.log(`Found ${existingData.length} existing records to delete`);
@@ -57,10 +57,10 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
         const placeholders = userIds.map(() => '?').join(',');
         const query = `
           DELETE FROM pending_deletions 
-          WHERE universe_id = ? AND user_id IN (${placeholders})
+          WHERE place_id = ? AND user_id IN (${placeholders})
         `;
         
-        const params = [universeId, ...userIds];
+        const params = [placeId, ...userIds];
         const result = await c.env.DB.prepare(query).bind(...params).run();
         
         // Handle different possible result formats
@@ -79,7 +79,7 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
     if (c.env.DISCORD_WEBHOOK_URL && deletedCount > 0) {
       try {
         console.log(`Sending Discord completion notification for ${deletedCount} deletions`);
-        const notification = createDeletionCompletedNotification(universeId, userIds);
+        const notification = createDeletionCompletedNotification(placeId, userIds);
         await sendDiscordNotification(c.env.DISCORD_WEBHOOK_URL, notification);
         console.log('Discord completion notification sent successfully');
       } catch (discordError) {
@@ -95,7 +95,7 @@ export async function handleDeletionCompleted(c: Context<{ Bindings: Env }>): Pr
     const response: ApiResponse = {
       success: true,
       data: {
-        universeId,
+        placeId,
         userIds,
         deletedCount,
         message: `Successfully marked ${deletedCount} deletion(s) as completed`

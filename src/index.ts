@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { Env } from './types';
 import { handleWebhook } from './handlers/webhook';
-import { getUsersByUniverse, getAllUsers } from './handlers/users';
+import { getUsersByPlace, getAllUsers } from './handlers/users';
 import { handleDeletionCompleted } from './handlers/delete';
 import { initializeDatabase } from './utils/db';
 
@@ -38,14 +38,14 @@ app.get('/', (c) => {
 // Webhook endpoint - receives deletion requests from Roblox
 app.post('/webhook', handleWebhook);
 
-// Get pending users for a specific universe
-app.get('/universes/:universeId/users', getUsersByUniverse);
+// Get pending users for a specific place
+app.get('/places/:placeId/users', getUsersByPlace);
 
-// Get all pending users grouped by universe
+// Get all pending users grouped by place
 app.get('/users', getAllUsers);
 
 // Mark deletions as completed (remove from queue)
-app.delete('/universes/:universeId/users', handleDeletionCompleted);
+app.delete('/places/:placeId/users', handleDeletionCompleted);
 
 // 404 handler
 app.notFound((c) => {

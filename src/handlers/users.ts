@@ -2,25 +2,25 @@ import { Context } from 'hono';
 import { Env, ApiResponse } from '../types';
 import { requireApiKey } from '../utils/auth';
 
-export async function getUsersByUniverse(c: Context<{ Bindings: Env }>): Promise<Response> {
+export async function getUsersByPlace(c: Context<{ Bindings: Env }>): Promise<Response> {
   // Check API key
   const authError = requireApiKey(c);
   if (authError) return authError;
 
   try {
-    const universeId = c.req.param('universeId');
+    const placeId = c.req.param('placeId');
     
-    if (!universeId) {
-      return c.json({ success: false, error: 'Universe ID is required' }, 400);
+    if (!placeId) {
+      return c.json({ success: false, error: 'Place ID is required' }, 400);
     }
 
     let results;
     try {
       const queryResult = await c.env.DB.prepare(`
         SELECT user_id FROM pending_deletions 
-        WHERE universe_id = ?
+        WHERE place_id = ?
         ORDER BY created_at ASC
-      `).bind(universeId).all();
+      `).bind(placeId).all();
       results = queryResult.results;
     } catch (dbError) {
       console.error('Database query error:', dbError);
@@ -37,7 +37,7 @@ export async function getUsersByUniverse(c: Context<{ Bindings: Env }>): Promise
     return c.json(response);
 
   } catch (error) {
-    console.error('Get users by universe error:', error);
+    console.error('Get users by place error:', error);
     return c.json({ success: false, error: 'Internal server error' }, 500);
   }
 }
@@ -51,8 +51,8 @@ export async function getAllUsers(c: Context<{ Bindings: Env }>): Promise<Respon
     let results;
     try {
       const queryResult = await c.env.DB.prepare(`
-        SELECT universe_id, user_id FROM pending_deletions 
-        ORDER BY universe_id, created_at ASC
+        SELECT place_id, user_id FROM pending_deletions 
+        ORDER BY place_id, created_at ASC
       `).all();
       results = queryResult.results;
     } catch (dbError) {
@@ -60,16 +60,16 @@ export async function getAllUsers(c: Context<{ Bindings: Env }>): Promise<Respon
       return c.json({ success: false, error: 'Database operation failed' }, 500);
     }
 
-    // Group by universe_id
+    // Group by place_id
     const groupedData: Record<string, string[]> = {};
     for (const row of results as any[]) {
-      const universeId = row.universe_id;
+      const placeId = row.place_id;
       const userId = row.user_id;
       
-      if (!groupedData[universeId]) {
-        groupedData[universeId] = [];
+      if (!groupedData[placeId]) {
+        groupedData[placeId] = [];
       }
-      groupedData[universeId].push(userId);
+      groupedData[placeId].push(userId);
     }
 
     const response: ApiResponse<Record<string, string[]>> = {
