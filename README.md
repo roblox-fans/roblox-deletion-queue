@@ -101,7 +101,7 @@ end)
 ```
 
 The above script will run the deletion process every time the server is started.
-Therefore, for large-scale games, if many servers are started at the same time, you may reach the request limit of Cloudflare Workers (100,000 requests/day, 1,000/day).
+Therefore, for large-scale games, if many servers are started at the same time, you may reach the request limit of Cloudflare Workers (100,000 requests/day, 1,000/min).
 Therefore, in large games, you can use the following script to ensure that deletion processes are only performed once every 30 minutes by one server.
 
 Server Version Tracker can be found here.
